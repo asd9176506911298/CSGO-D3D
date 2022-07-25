@@ -11,3 +11,4 @@
 #include "dx.h"
 #include "hook.h"
 #include "drawing.h"
+#include "hack.h"
