@@ -7,12 +7,24 @@
 
 #define ABS(x) ((x < 0) ? (-x) : (x))
 
+#define TORAD(x) ((x) * 0.01745329252)
+
+#define W2S(x,y) hack->WorldToScreen(x, y)
+
 struct Vec2 {
 	float x, y;
 };
 
 struct Vec3 {
 	float x, y, z;
+	Vec3 operator+(Vec3 d)
+	{
+		return { x + d.x, y + d.y, z + d.z };
+	}
+	Vec3 operator*(float d)
+	{
+		return { x * d, y * d,z * d };
+	}
 };
 struct Vec4 {
 	float x, y, z, w;
@@ -30,6 +42,10 @@ public:
 		DEFINE_MEMBER_N(int, m_dwBoneMatrix, 0x26A8);
 		DEFINE_MEMBER_N(int, m_ArmorValue, 0x117CC);
 		DEFINE_MEMBER_N(Vec3, m_aimPunchAngle, 0x303C);
+		DEFINE_MEMBER_N(float, m_angEyeAnglesX, 0x117D0);
+		DEFINE_MEMBER_N(float, m_angEyeAnglesY, 0x117D4);
+		DEFINE_MEMBER_N(Vec3, m_vecVelocity, 0x114);
+		DEFINE_MEMBER_N(bool, m_bHasHelmet, 0x117C0);
 	};
 };
 
@@ -56,13 +72,29 @@ public:
 	float viewMatrix[16];
 
 	ID3DXLine* LineL;
+	ID3DXFont* FontF;
 
 	Vec2 crosshair2D;
 	int corsshairSize = 4;
+
+	~Hack();
 
 	void Init();
 	void Update();
 	bool CheckValidEnt(Ent* ent);
 	bool WorldToScreen(Vec3 pos, Vec2& screen);
 	Vec3 GetBonePos(Ent* ent, int bone);
+	Vec3 TransformVec(Vec3 src, Vec3 ang, float d);
+
+	struct Settings {
+		bool showTeamates = true;
+		bool snaplines = true;
+		bool box2D = false;
+		bool status2D = false;
+		bool box3D = true;
+		bool velEsp = true;
+		bool headlineEsp = true;
+		bool statusText = true;
+		bool rcsCrosshair = true;
+	}settings;
 };

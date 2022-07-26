@@ -15,5 +15,7 @@
 #include "dx.h"
 #include "hook.h"
 #include "drawing.h"
+#include <sstream>
+#include <string.h>
 
 #endif //PCH_H
