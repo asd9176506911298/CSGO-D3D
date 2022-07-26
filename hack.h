@@ -81,20 +81,59 @@ public:
 
 	void Init();
 	void Update();
+
+	void CheckButtons();
+
 	bool CheckValidEnt(Ent* ent);
 	bool WorldToScreen(Vec3 pos, Vec2& screen);
 	Vec3 GetBonePos(Ent* ent, int bone);
 	Vec3 TransformVec(Vec3 src, Vec3 ang, float d);
 
 	struct Settings {
-		bool showTeamates = true;
-		bool snaplines = true;
+		bool showMenu = false;
+		bool showTeamates = false;
+		bool snaplines = false;
 		bool box2D = false;
 		bool status2D = false;
-		bool box3D = true;
-		bool velEsp = true;
-		bool headlineEsp = true;
-		bool statusText = true;
-		bool rcsCrosshair = true;
+		bool box3D = false;
+		bool velEsp = false;
+		bool headlineEsp = false;
+		bool statusText = false;
+		bool rcsCrosshair = false;
 	}settings;
+
+	struct Buttons
+	{
+		DWORD showMenuBtn =		VK_INSERT;
+		DWORD showTeamatesBtn = VK_F1;
+		DWORD snaplinesBtn =	VK_F2;
+		DWORD box2DBtn =		VK_F3;
+		DWORD status2DBtn =		VK_F4;
+		DWORD statusTextBtn =	VK_F5;
+		DWORD box3DBtn =		VK_F6;
+		DWORD velEspBtn =		VK_F7;
+		DWORD headlineEspBtn =	VK_F8;
+		DWORD rcsCrosshairBtn = VK_F9;
+	}button;
+
+	struct Colors
+	{
+		D3DCOLOR health = D3DCOLOR_ARGB(255, 46, 139, 87);
+		D3DCOLOR armor = D3DCOLOR_ARGB(255, 30, 144, 255);
+		D3DCOLOR crosshair = D3DCOLOR_ARGB(255, 255, 255, 255);
+		struct Team 
+		{
+			D3DCOLOR esp = D3DCOLOR_ARGB(255, 0, 255, 0);
+			D3DCOLOR snapline = D3DCOLOR_ARGB(255, 0, 255, 0);
+			D3DCOLOR velocity = D3DCOLOR_ARGB(255, 0, 0, 255);
+			D3DCOLOR headline = D3DCOLOR_ARGB(255, 0, 0, 255);
+		}team;
+		struct Enemy
+		{
+			D3DCOLOR esp = D3DCOLOR_ARGB(255, 255, 0, 0);
+			D3DCOLOR snapline = D3DCOLOR_ARGB(255, 255, 0, 0);
+			D3DCOLOR velocity = D3DCOLOR_ARGB(255, 0, 255, 255);
+			D3DCOLOR headline = D3DCOLOR_ARGB(255, 0, 255, 255);
+		}enemy;
+	}color;
 };

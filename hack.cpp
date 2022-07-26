@@ -18,6 +18,32 @@ void Hack::Init()
 void Hack::Update()
 {
 	memcpy(&viewMatrix, (PBYTE*)(client + dwViewMatrix), sizeof(viewMatrix));
+	this->CheckButtons();
+}
+
+void Hack::CheckButtons()
+{
+	if (GetAsyncKeyState(button.showMenuBtn) & 1)
+		settings.showMenu = !settings.showMenu;
+	if (GetAsyncKeyState(button.showTeamatesBtn) & 1)
+		settings.showTeamates = !settings.showTeamates;
+	if (GetAsyncKeyState(button.snaplinesBtn) & 1)
+		settings.snaplines = !settings.snaplines;
+	if (GetAsyncKeyState(button.box2DBtn) & 1)
+		settings.box2D = !settings.box2D;
+	if (GetAsyncKeyState(button.status2DBtn) & 1)
+		settings.status2D = !settings.status2D;
+	if (GetAsyncKeyState(button.statusTextBtn) & 1)
+		settings.statusText = !settings.statusText;
+	if (GetAsyncKeyState(button.box3DBtn) & 1)
+		settings.box3D = !settings.box3D;
+	if (GetAsyncKeyState(button.velEspBtn) & 1)
+		settings.velEsp = !settings.velEsp;
+	if (GetAsyncKeyState(button.headlineEspBtn) & 1)
+		settings.headlineEsp = !settings.headlineEsp;
+	if (GetAsyncKeyState(button.rcsCrosshairBtn) & 1)
+		settings.rcsCrosshair = !settings.rcsCrosshair;
+
 }
 
 bool Hack::CheckValidEnt(Ent* ent)

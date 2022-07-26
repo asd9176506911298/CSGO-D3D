@@ -17,6 +17,28 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice)
 
     DrawText("Yuki.kaco", windowWidth / 2, windowHeight - 20, D3DCOLOR_ARGB(255, 255, 255, 255));
 
+    int menuOffX = windowWidth / 2;
+    int menuOffY = 50;
+    D3DCOLOR enabled = D3DCOLOR_ARGB(255, 0, 255, 0);
+    D3DCOLOR disabled = D3DCOLOR_ARGB(255, 255, 0, 0);
+
+    if (!hack->settings.showMenu)
+    {
+        DrawText("Show Menu (INS)", menuOffX, menuOffY, D3DCOLOR_ARGB(255, 255, 255, 255));
+    }
+    else
+    {
+        DrawText("Show Teamates (F1)", menuOffX, menuOffY + 0 * 12, hack->settings.showTeamates ? enabled : disabled);
+        DrawText("Snaplines (F2)", menuOffX, menuOffY + 1 * 12, hack->settings.snaplines ? enabled : disabled);
+        DrawText("2D Box (F3)", menuOffX, menuOffY + 2 * 12, hack->settings.box2D ? enabled : disabled);
+        DrawText("2D Statusbars (F4)", menuOffX, menuOffY + 3 * 12, hack->settings.status2D? enabled : disabled);
+        DrawText("Status Text (F5)", menuOffX, menuOffY + 4 * 12, hack->settings.statusText ? enabled : disabled);
+        DrawText("3D Box (F6)", menuOffX, menuOffY + 5 * 12, hack->settings.box3D ? enabled : disabled);
+        DrawText("Velocity Esp(F7)", menuOffX, menuOffY + 6 * 12, hack->settings.velEsp ? enabled : disabled);
+        DrawText("Headline Esp (F8)", menuOffX, menuOffY + 7 * 12, hack->settings.headlineEsp ? enabled : disabled);
+        DrawText("Recoil crosshair (F9)", menuOffX, menuOffY + 8 * 12, hack->settings.rcsCrosshair ? enabled : disabled);
+        DrawText("Hide Menu (INS)", menuOffX, menuOffY + 9 * 12, D3DCOLOR_ARGB(255, 255, 255, 255));
+    }
 
     for (int i = 1; i < 32; i++)
     {
@@ -24,11 +46,21 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice)
         if (!hack->CheckValidEnt(curEnt))
             continue;
 
-        D3DCOLOR color;
+        D3DCOLOR espColor, snaplineColor, velocityColor, headlineColor;
         if (curEnt->m_iTeamNum == hack->localEnt->m_iTeamNum)
-            color = D3DCOLOR_ARGB(255, 0, 255, 0);
+        {
+            espColor = hack->color.team.esp;
+            snaplineColor = hack->color.team.snapline;
+            velocityColor = hack->color.team.velocity;
+            headlineColor = hack->color.team.headline;
+        }
         else
-            color = D3DCOLOR_ARGB(255, 255, 0, 0);
+        {
+            espColor = hack->color.enemy.esp;
+            snaplineColor = hack->color.enemy.snapline;
+            velocityColor = hack->color.enemy.velocity;
+            headlineColor = hack->color.enemy.headline;
+        }
 
         if (!hack->settings.showTeamates && (curEnt->m_iTeamNum == hack->localEnt->m_iTeamNum))
             continue;
@@ -44,25 +76,25 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice)
 
                 if (hack->WorldToScreen(velOff, velOff2D))
                 {
-                    DrawLine(entPos2D, velOff2D, 2, color);
-                    DrawFilledRect(velOff2D.x - 2, velOff2D.y - 2, 4, 4, color);
+                    DrawLine(entPos2D, velOff2D, 2, velocityColor);
+                    DrawFilledRect(velOff2D.x - 2, velOff2D.y - 2, 4, 4, espColor);
                 }
             }
             if (hack->settings.snaplines) 
             {
-                DrawLine(entPos2D.x, entPos2D.y, windowWidth / 2, windowHeight, 2, color);
+                DrawLine(entPos2D.x, entPos2D.y, windowWidth / 2, windowHeight, 2, snaplineColor);
             }
             
             
             if (hack->WorldToScreen(entHead3D, entHead2D)) {
                 if (hack->settings.box2D)
                 {
-                    DrawEspBox2D(entPos2D, entHead2D, 2, color);
+                    DrawEspBox2D(entPos2D, entHead2D, 2, espColor);
                 }
 
                 if (hack->settings.box3D)
                 {
-                    DrawEspBox3D(entHead3D, curEnt->m_vecOrigin, curEnt->m_angEyeAnglesY, 25, 2, color);
+                    DrawEspBox3D(entHead3D, curEnt->m_vecOrigin, curEnt->m_angEyeAnglesY, 25, 2, espColor);
                 }
                 
                 if (hack->settings.status2D)
@@ -88,8 +120,8 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice)
                     topHealth.x = entPos2D.x - (height / 4) - 2 - (dx * healthPerc);
                     topArmor.x = entPos2D.x + (height / 4) + 2 - (dx * armorPerc);
 
-                    DrawLine(botHealth, topHealth, 4, D3DCOLOR_ARGB(255, 46, 139, 87));
-                    DrawLine(botArmor, topArmor, 4, D3DCOLOR_ARGB(255, 30, 144, 255));
+                    DrawLine(botHealth, topHealth, 4, hack->color.health);
+                    DrawLine(botArmor, topArmor, 4, hack->color.armor);
                 }              
 
                 if (hack->settings.headlineEsp)
@@ -104,7 +136,7 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice)
                     hack->WorldToScreen(head3D, head2D);
                     if (hack->WorldToScreen(endPoint, endPoint2D))
                     {
-                        DrawLine(head2D, endPoint2D, 2, color);
+                        DrawLine(head2D, endPoint2D, 2, headlineColor);
                     }
                 }
 
@@ -138,8 +170,8 @@ void APIENTRY hkEndScene(LPDIRECT3DDEVICE9 o_pDevice)
         b.y += hack->corsshairSize;
         t.y -= hack->corsshairSize;
 
-        DrawLine(l, r, 2, D3DCOLOR_ARGB(255, 255, 255, 255));
-        DrawLine(t, b, 2, D3DCOLOR_ARGB(255, 255, 255, 255));
+        DrawLine(l, r, 2, hack->color.crosshair);
+        DrawLine(t, b, 2, hack->color.crosshair);
     }
     
 
