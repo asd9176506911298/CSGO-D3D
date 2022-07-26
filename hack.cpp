@@ -47,3 +47,16 @@ bool Hack::WorldToScreen(Vec3 pos, Vec2& screen)
 	screen.y = -(windowHeight / 2 * NDC.y) + (NDC.y + windowHeight / 2);
 	return true;
 }
+
+Vec3 Hack::GetBonePos(Ent* ent, int bone)
+{
+	uintptr_t bonePtr = ent->m_dwBoneMatrix;
+	Vec3 bonePos;
+	bonePos.x = *(float*)(bonePtr
+		+ 0x30 * bone + 0xC);
+	bonePos.y = *(float*)(bonePtr
+		+ 0x30 * bone + 0x1C);
+	bonePos.z = *(float*)(bonePtr
+		+ 0x30 * bone + 0x2C);
+	return bonePos;
+}
